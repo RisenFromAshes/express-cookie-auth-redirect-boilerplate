@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser')
 
 const app = express()
 
-app.use(cookieParser('Ablabpabamha45'))
+app.use(cookieParser('Ablabpa55amha45'))
 
 const server = app.listen(80, () => console.log('Connected to port 80'))
 app.use(bodyParser.json({
@@ -13,7 +13,7 @@ app.use(bodyParser.json({
 }))
 
 app.get('/', (req, res) => {
-    let authCookie = req.cookies.auth
+    let authCookie = req.signedCookies.auth
     if (authCookie && authCookie === 'access') {
         res.sendFile(path.resolve('./index.html'))
     } else {
@@ -22,7 +22,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/getAuth', (req, res) => {
-    let authCookie = req.cookies.auth
+    let authCookie = req.signedCookies.auth
     if (authCookie && authCookie === 'access') res.sendFile(path.resolve('./index.html'))
     else res.sendFile(path.resolve('./auth.html'))
 })
@@ -30,9 +30,9 @@ app.get('/getAuth', (req, res) => {
 app.post('/getAuth', (req, res) => {
     if (!req.body.password) return
     if (req.body.password === 'IFuckYou') {
-        console.log('trying to set cookie')
         res.cookie('auth', 'access', {
-            httpOnly: true
+            httpOnly: true,
+            signed: true
         })
         res.sendStatus(200)
     } else res.sendStatus(406)
